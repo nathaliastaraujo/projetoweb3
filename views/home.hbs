@@ -1,0 +1,145 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<title> Twitter | Home </title>
+        	<link rel="icon" href="/images/logo.png"/>
+		<link rel="stylesheet" href="/stylesheets/home.css" type="text/css" media="screen" charset="utf-8">
+	</head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="pesquisa">
+                    <form action="pesquisa" method="POST">
+                        <input type="text" id="pesq" name="pesq" maxlength="200" size="80%" placeholder="Digite aqui o que procura" height="250px">
+                        <input type="submit" value="Pesquisar">
+                    </form>
+                </div>
+                <div class="menu">
+                    <label for="nome_usuario"> </label>
+                </div>
+            </div>
+            <br> <br>
+            <form action="postar" method="POST">
+                <textarea type="text" rows="10" cols="50" name="texto" id="texto" placeholder="O que está acontecendo?"></textarea> <br>
+                <input type="file" name="imagem" accept="image/*">
+                <br><br>
+                <input type="submit" value="Postar" id="postar">
+            </form> <br />
+            <input type="button" value="Carregar tweets" id="carregar" /> <input type="button" value="Mensagem Json" id="msg" />
+            <br /> <br />
+            <div id="msgj" class="msgj"></div>
+            <br />
+
+            <div class="postes" id="postes">
+                {{#each postagens}}
+                <div class="conteudo">
+                    {{this.texto}}
+                </div> <br />
+                {{/each}}
+
+            </div> <br />
+
+        </div>
+
+        <script defer type="text/javascript" charset="utf-8" async>
+            var postes = document.querySelector("#postes");
+            var publicar = document.querySelector("#postar");
+            var carregar = document.querySelector("#carregar");
+            var ldbar = '<center><img src="./images/loadbar.gif"/></center>';
+            var pesq = document.querySelector("#pesq");
+            var msg = document.querySelector("#msgj");
+            var bt = document.querySelector("#msg");
+
+
+            // Para mostrar os posts em tempo real
+            carregar.addEventListener("click", function () {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", "tl", true);
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        postes.innerHTML = xmlhttp.responseText;
+                    }
+                     else
+                    {
+                        postes.innerHTML = ldbar;
+                    }
+                };
+                xmlhttp.send("postes=" + postes.value);
+            });
+
+            // Live-Search
+            setInterval(function(){
+				if (pesq.value == "")
+				{
+					var xmlhttp = new XMLHttpRequest();
+					xmlhttp.open("GET", "tl", true);
+					xmlhttp.onreadystatechange = function() {
+						if (xmlhttp.readyState === 4 && xmlhttp.status === 200)
+						{
+							postes.innerHTML = xmlhttp.responseText;
+						}
+						else
+						{
+							postes.innerHTML = ldbar;
+						}
+					};
+					xmlhttp.send();
+				}
+			});
+
+            pesq.addEventListener("keyup", function live_pesq() {
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.open("POST", "live-src", true);
+				xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState === 4 && xmlhttp.status === 200)
+					{
+						postes.innerHTML = xmlhttp.responseText;
+					}
+					else
+					{
+						postes.innerHTML = ldbar;
+					}
+				};
+				xmlhttp.send("pesq=" + pesq.value);
+			});
+
+
+            // Para atualizar quando é postado
+            publicar.addEventListener("click", function () {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("POST", "postar", true);
+                xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        postes.innerHTML = xmlhttp.responseText;
+                    }
+                    else
+                    {
+                        postes.innerHTML = ldbar;
+                    }
+                };
+                xmlhttp.send("postes=" + postes.value);
+            });
+
+            // Para mostrar a mensagem Json
+            bt.addEventListener("click", function () {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", "jsonmsg", true);
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        msg.innerHTML = xmlhttp.responseText;
+                    }
+                     else
+                    {
+                        postes.innerHTML = ldbar;
+                    }
+                };
+                xmlhttp.send("msg=" + msg.value);
+            });
+        </script>
+
+    </body>
+
+</html>
