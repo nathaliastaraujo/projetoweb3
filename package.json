@@ -7,7 +7,7 @@
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
+    "express-handlebars": "^5.3.1",
     "express-session": "^1.16.2",
     "hbs": "^4.0.4",
     "mongodb": "^3.2.7",
@@ -23,5 +23,5 @@
   },
   "author": "Trabalho feito por Hidemi e Nathalia",
   "license": "ISC",
-  "description": "Programação para Web - Projeto 03"
+  "description": "ProgramaÃ§Ã£o para Web - Projeto 03"
 }
